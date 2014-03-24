@@ -39,6 +39,19 @@ h1,h2,h3{
 	font-family: Futura, sans-serif;
 	}
 	
+header p{
+	font-size: 1.2em;
+	}
+	
+header a, header a:visited{
+	color: #FFFFFF;
+	}
+	
+header a:hover{
+	color: #999999;
+	}
+	
+	
 	
 img,object,wmbed,video{
 	max-width: 100%;
@@ -92,6 +105,21 @@ img,object,wmbed,video{
     
 	}
 	
+.alert{
+	color: #FF0000;
+	padding: 0.6em;
+	font-weight: bold;
+	}
+	
+.fa-check{
+	float: left;
+	color: #00BB00; 
+	margin-right: 0.15em;
+	}
+	
+li .fa-check{
+	float: none;
+	}
 	
 /* self-clear floats */
 
@@ -115,6 +143,10 @@ clear: both;
 		
 	#wrapper h1{
 		font-size: 3em;
+		}
+		
+	.right{
+		float: right;
 		}
 	}
 
