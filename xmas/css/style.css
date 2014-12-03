@@ -245,7 +245,57 @@ td {
 .invisible {
   visibility: hidden; }
 
-/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+/* ==========================================================================
+   Print styles
+   ========================================================================== */
+@media print {
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important; }
+
+  a,
+  a:visited {
+    text-decoration: underline; }
+
+  a[href]:after {
+    content: " (" attr(href) ")"; }
+
+  abbr[title]:after {
+    content: " (" attr(title) ")"; }
+
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: ""; }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid; }
+
+  thead {
+    display: table-header-group; }
+
+  tr,
+  img {
+    page-break-inside: avoid; }
+
+  img {
+    max-width: 100% !important; }
+
+  @page {
+    margin: 0.5cm; }
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3; }
+
+  h2,
+  h3 {
+    page-break-after: avoid; } }
 html,
 button,
 input,
@@ -265,6 +315,11 @@ html {
   background: #b3d4fc;
   text-shadow: none; }
 
+a:link, a:visited {
+  color: #243600; }
+a:focus, a:hover {
+  color: #578300; }
+
 hr {
   display: block;
   height: 1px;
@@ -279,10 +334,19 @@ img,
 video {
   vertical-align: middle; }
 
+aside {
+  margin: 10px 0; }
+
 fieldset {
   border: 0;
   margin: 0;
   padding: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Mountains of Christmas", cursive, Georgia; }
+
+ul {
+  margin-left: 40px; }
 
 textarea {
   resize: vertical; }
@@ -297,29 +361,53 @@ textarea {
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
    ========================================================================== */
 body {
-  font: 16px/26px Helvetica, Helvetica Neue, Arial; }
+  background: #880000;
+  font: 18px/28px "Shadows Into Light Two", Helvetica, Helvetica Neue, Arial, cursive;
+  font-weight: bold;
+  height: 100%; }
 
 .wrapper {
-  width: 90%;
+  width: 95%;
   margin: 0 5%; }
 
 /* ===================
     ALL: Orange Theme
    =================== */
 .header-container {
-  border-bottom: 20px solid #e44d26; }
+  border-bottom: 20px solid #bb0000; }
 
 .footer-container,
 .main aside {
-  border-top: 20px solid #e44d26; }
+  border-top: 20px solid #bb0000; }
 
 .header-container,
 .footer-container,
 .main aside {
-  background: #f16529; }
+  background: #880000; }
+  .header-container a:link, .header-container a:visited,
+  .footer-container a:link,
+  .footer-container a:visited,
+  .main aside a:link,
+  .main aside a:visited {
+    color: #8FBE30; }
+  .header-container a:focus, .header-container a:hover,
+  .footer-container a:focus,
+  .footer-container a:hover,
+  .main aside a:focus,
+  .main aside a:hover {
+    color: #618121; }
 
 .title {
   color: white; }
+
+.main-container {
+  background: #FFFFFF; }
+
+.post-footer {
+  background: url("../img/santa.png") no-repeat bottom right;
+  clear: both;
+  height: 340px;
+  padding-right: 50px; }
 
 /* ==============
     MOBILE: Menu
@@ -336,7 +424,7 @@ nav a {
   text-decoration: none;
   font-weight: bold;
   color: white;
-  background: #e44d26; }
+  background: #bb0000; }
 
 nav a:hover,
 nav a:visited {
@@ -488,57 +576,5 @@ nav a:hover {
 
 .clearfix {
   *zoom: 1; }
-
-/* ==========================================================================
-   Print styles
-   ========================================================================== */
-@media print {
-  * {
-    background: transparent !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    text-shadow: none !important; }
-
-  a,
-  a:visited {
-    text-decoration: underline; }
-
-  a[href]:after {
-    content: " (" attr(href) ")"; }
-
-  abbr[title]:after {
-    content: " (" attr(title) ")"; }
-
-  .ir a:after,
-  a[href^="javascript:"]:after,
-  a[href^="#"]:after {
-    content: ""; }
-
-  pre,
-  blockquote {
-    border: 1px solid #999;
-    page-break-inside: avoid; }
-
-  thead {
-    display: table-header-group; }
-
-  tr,
-  img {
-    page-break-inside: avoid; }
-
-  img {
-    max-width: 100% !important; }
-
-  @page {
-    margin: 0.5cm; }
-  p,
-  h2,
-  h3 {
-    orphans: 3;
-    widows: 3; }
-
-  h2,
-  h3 {
-    page-break-after: avoid; } }
 
 /*# sourceMappingURL=style.css.map */

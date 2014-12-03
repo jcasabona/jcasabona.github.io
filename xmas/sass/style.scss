@@ -7,8 +7,18 @@
 @import "partials/header";
 @import "partials/footer";
 @import "partials/ie";
+@import "partials/print";
 
-/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+$font-body: 'Shadows Into Light Two', Helvetica, Helvetica Neue, Arial, cursive;
+$font-heading: 'Mountains of Christmas', cursive, Georgia;
+
+$color-bg: #880000;
+$color-accent: lighten($color-bg, 10%);
+$color-href: #243600;
+$color-href-hover: lighten($color-href, 15%);
+$color-href-alt: #8FBE30;
+$color-href-alt-hover: darken($color-href-alt, 15%);
+$color-white: #FFFFFF;
 
 html,
 button,
@@ -33,6 +43,10 @@ html {
     text-shadow: none;
 }
 
+a {
+	@include href-colors($color-href, $color-href-hover);
+}
+
 hr {
     display: block;
     height: 1px;
@@ -49,10 +63,22 @@ video {
     vertical-align: middle;
 }
 
+aside{
+	margin: 10px 0;
+}
+
 fieldset {
     border: 0;
     margin: 0;
     padding: 0;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: $font-heading;
+}
+
+ul {
+	margin-left: 40px;
 }
 
 textarea {
@@ -72,11 +98,14 @@ textarea {
    ========================================================================== */
 
 body {
-    font: 16px/26px Helvetica, Helvetica Neue, Arial;
+	background: $color-bg;
+    font: 18px/28px $font-body;
+    font-weight: bold;
+    height: 100%;
 }
 
 .wrapper {
-    width: 90%;
+    width: 95%;
     margin: 0 5%;
 }
 
@@ -85,22 +114,37 @@ body {
    =================== */
 
 .header-container {
-    border-bottom: 20px solid #e44d26;
+    border-bottom: 20px solid $color-accent;
 }
 
 .footer-container,
 .main aside {
-    border-top: 20px solid #e44d26;
+    border-top: 20px solid $color-accent;
 }
 
 .header-container,
 .footer-container,
 .main aside {
-    background: #f16529;
+    background: $color-bg;
+
+    a {
+    	@include href-colors($color-href-alt, $color-href-alt-hover);
+    }
 }
 
 .title {
     color: white;
+}
+
+.main-container {
+	background: $color-white;
+}
+
+.post-footer {
+	background: url("../img/santa.png") no-repeat bottom right;
+	clear: both;
+	height: 340px;
+	padding-right: 50px;
 }
 
 /* ==============
@@ -122,7 +166,7 @@ nav a {
     font-weight: bold;
 
     color: white;
-    background: #e44d26;
+    background: $color-accent;
 }
 
 nav a:hover,
@@ -334,71 +378,4 @@ nav a:hover {
 
 .clearfix {
     *zoom: 1;
-}
-
-/* ==========================================================================
-   Print styles
-   ========================================================================== */
-
-@media print {
-    * {
-        background: transparent !important;
-        color: #000 !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-    }
-
-    a,
-    a:visited {
-        text-decoration: underline;
-    }
-
-    a[href]:after {
-        content: " (" attr(href) ")";
-    }
-
-    abbr[title]:after {
-        content: " (" attr(title) ")";
-    }
-
-    .ir a:after,
-    a[href^="javascript:"]:after,
-    a[href^="#"]:after {
-        content: "";
-    }
-
-    pre,
-    blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
-
-    thead {
-        display: table-header-group;
-    }
-
-    tr,
-    img {
-        page-break-inside: avoid;
-    }
-
-    img {
-        max-width: 100% !important;
-    }
-
-    @page {
-        margin: 0.5cm;
-    }
-
-    p,
-    h2,
-    h3 {
-        orphans: 3;
-        widows: 3;
-    }
-
-    h2,
-    h3 {
-        page-break-after: avoid;
-    }
 }
