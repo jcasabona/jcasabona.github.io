@@ -134,9 +134,10 @@ clear: both;
 		width: 31%;
 		margin: 15px 1%;
 		float: left;
+		transition: background-color 0.5s ease;
 		}
 
-	dl.christmas a:hover{
+	dl.christmas dt a:hover, dl.christmas dd{
 		color: #FFFFFF;
 		background: #880000;
 		}
