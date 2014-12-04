@@ -72,6 +72,8 @@ img,object,wmbed,video{
 	font-weight: bold;
 	padding: 10px 0 5px 0;
 	color: #880000;
+	background: #FFFFFF;
+	transition: background-color 0.5s ease;
 	}
 	
 #wrapper dl dd{
@@ -134,10 +136,9 @@ clear: both;
 		width: 31%;
 		margin: 15px 1%;
 		float: left;
-		transition: background-color 0.5s ease;
 		}
 
-	dl.christmas dt a:hover, dl.christmas dd{
+	dl.christmas dt:hover, dl.christmas dd:hover{
 		color: #FFFFFF;
 		background: #880000;
 		}
