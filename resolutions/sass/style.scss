@@ -9,14 +9,14 @@
 @import "partials/ie";
 @import "partials/print";
 
-$font-body: 'Shadows Into Light Two', Helvetica, Helvetica Neue, Arial, cursive;
-$font-heading: 'Mountains of Christmas', cursive, Georgia;
+$font-body: 'Droid Sans', Helvetica, Helvetica Neue, Arial, cursive;
+$font-heading: 'Droid Serif', Garamond, Georgia;
 
-$color-bg: #880000;
-$color-accent: lighten($color-bg, 10%);
-$color-href: #243600;
+$color-bg: #3D4038;
+$color-accent: #F2D377;
+$color-href: #D95448;
 $color-href-hover: lighten($color-href, 15%);
-$color-href-alt: #8FBE30;
+$color-href-alt: #A0E3F2;
 $color-href-alt-hover: darken($color-href-alt, 15%);
 $color-white: #FFFFFF;
 
@@ -100,7 +100,6 @@ textarea {
 body {
 	background: $color-bg;
     font: 18px/28px $font-body;
-    font-weight: bold;
     height: 100%;
 }
 
@@ -130,6 +129,12 @@ body {
     a {
     	@include href-colors($color-href-alt, $color-href-alt-hover);
     }
+
+    & nav {
+         a {
+             @include href-colors($color-bg, $color-href-alt-hover);
+         }
+    }
 }
 
 .title {
@@ -138,13 +143,6 @@ body {
 
 .main-container {
 	background: $color-white;
-}
-
-.post-footer {
-	background: url("../img/santa.png") no-repeat bottom right;
-	clear: both;
-	height: 340px;
-	padding-right: 50px;
 }
 
 /* ==============
@@ -165,17 +163,8 @@ nav a {
     text-decoration: none;
     font-weight: bold;
 
-    color: white;
+    @include href-colors($color-bg, lighten($color-bg, 10%));
     background: $color-accent;
-}
-
-nav a:hover,
-nav a:visited {
-    color: white;
-}
-
-nav a:hover {
-    text-decoration: underline;
 }
 
 /* ==============
@@ -240,7 +229,7 @@ nav a:hover {
         float: left;
         width: 27%;
         margin: 0 1.7%;
-        padding: 25px 2%;
+        padding: 15px 2%;
         margin-bottom: 0;
     }
 
@@ -296,13 +285,21 @@ nav a:hover {
    ============ */
 
     .main article {
-        float: left;
-        width: 57%;
-    }
+        display: inline-block;
+        margin: 10px 1%;
+        vertical-align: top;
+        width: 47%;
 
-    .main aside {
-        float: right;
-        width: 28%;
+       ul{
+            margin: 0;
+
+             li {
+                font-size: 1.2em;
+                border-bottom: 1px solid $color-accent;
+                padding: 10px 0;
+                list-style-type: none;
+            }
+        }
     }
 }
 

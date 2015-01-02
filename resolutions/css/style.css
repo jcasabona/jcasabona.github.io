@@ -316,9 +316,9 @@ html {
   text-shadow: none; }
 
 a:link, a:visited {
-  color: #243600; }
+  color: #D95448; }
 a:focus, a:hover {
-  color: #578300; }
+  color: #e68f87; }
 
 hr {
   display: block;
@@ -343,7 +343,7 @@ fieldset {
   padding: 0; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Mountains of Christmas", cursive, Georgia; }
+  font-family: "Droid Serif", Garamond, Georgia; }
 
 ul {
   margin-left: 40px; }
@@ -361,9 +361,8 @@ textarea {
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
    ========================================================================== */
 body {
-  background: #880000;
-  font: 18px/28px "Shadows Into Light Two", Helvetica, Helvetica Neue, Arial, cursive;
-  font-weight: bold;
+  background: #3D4038;
+  font: 18px/28px "Droid Sans", Helvetica, Helvetica Neue, Arial, cursive;
   height: 100%; }
 
 .wrapper {
@@ -374,40 +373,46 @@ body {
     ALL: Orange Theme
    =================== */
 .header-container {
-  border-bottom: 20px solid #bb0000; }
+  border-bottom: 20px solid #F2D377; }
 
 .footer-container,
 .main aside {
-  border-top: 20px solid #bb0000; }
+  border-top: 20px solid #F2D377; }
 
 .header-container,
 .footer-container,
 .main aside {
-  background: #880000; }
+  background: #3D4038; }
   .header-container a:link, .header-container a:visited,
   .footer-container a:link,
   .footer-container a:visited,
   .main aside a:link,
   .main aside a:visited {
-    color: #8FBE30; }
+    color: #A0E3F2; }
   .header-container a:focus, .header-container a:hover,
   .footer-container a:focus,
   .footer-container a:hover,
   .main aside a:focus,
   .main aside a:hover {
-    color: #618121; }
+    color: #5dcfe9; }
+  .header-container nav a:link, .header-container nav a:visited,
+  .footer-container nav a:link,
+  .footer-container nav a:visited,
+  .main aside nav a:link,
+  .main aside nav a:visited {
+    color: #3D4038; }
+  .header-container nav a:focus, .header-container nav a:hover,
+  .footer-container nav a:focus,
+  .footer-container nav a:hover,
+  .main aside nav a:focus,
+  .main aside nav a:hover {
+    color: #5dcfe9; }
 
 .title {
   color: white; }
 
 .main-container {
   background: #FFFFFF; }
-
-.post-footer {
-  background: url("../img/santa.png") no-repeat bottom right;
-  clear: both;
-  height: 340px;
-  padding-right: 50px; }
 
 /* ==============
     MOBILE: Menu
@@ -423,15 +428,11 @@ nav a {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
-  color: white;
-  background: #bb0000; }
-
-nav a:hover,
-nav a:visited {
-  color: white; }
-
-nav a:hover {
-  text-decoration: underline; }
+  background: #F2D377; }
+  nav a:link, nav a:visited {
+    color: #3D4038; }
+  nav a:focus, nav a:hover {
+    color: #575b50; }
 
 /* ==============
     MOBILE: Main
@@ -470,7 +471,7 @@ nav a:hover {
     float: left;
     width: 27%;
     margin: 0 1.7%;
-    padding: 25px 2%;
+    padding: 15px 2%;
     margin-bottom: 0; }
 
   nav li:first-child a {
@@ -511,12 +512,17 @@ nav a:hover {
       WIDE: Main
      ============ */
   .main article {
-    float: left;
-    width: 57%; }
-
-  .main aside {
-    float: right;
-    width: 28%; } }
+    display: inline-block;
+    margin: 10px 1%;
+    vertical-align: top;
+    width: 47%; }
+    .main article ul {
+      margin: 0; }
+      .main article ul li {
+        font-size: 1.2em;
+        border-bottom: 1px solid #F2D377;
+        padding: 10px 0;
+        list-style-type: none; } }
 @media only screen and (min-width: 1140px) {
   /* ===============
       Maximal Width
