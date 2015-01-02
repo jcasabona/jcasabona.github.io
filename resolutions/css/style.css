@@ -366,8 +366,7 @@ body {
   height: 100%; }
 
 .wrapper {
-  width: 95%;
-  margin: 0 5%; }
+  margin: 0 2%; }
 
 /* ===================
     ALL: Orange Theme
@@ -413,6 +412,11 @@ body {
 
 .main-container {
   background: #FFFFFF; }
+  .main-container header {
+    text-align: center; }
+    .main-container header h3 {
+      margin: 0;
+      padding: 30px 0 10px; }
 
 /* ==============
     MOBILE: Menu
@@ -511,29 +515,39 @@ nav a {
   /* ============
       WIDE: Main
      ============ */
-  .main article {
-    display: inline-block;
-    margin: 10px 1%;
-    vertical-align: top;
-    width: 47%; }
-    .main article ul {
-      margin: 0; }
-      .main article ul li {
-        font-size: 1.2em;
-        border-bottom: 1px solid #F2D377;
-        padding: 10px 0;
-        list-style-type: none; } }
+  .main {
+    display: flex; }
+    .main article {
+      border: 1px solid #A0E3F2;
+      margin: 0 5px;
+      padding: 10px 1%;
+      width: 47%; }
+      .main article h3 {
+        text-align: center; }
+      .main article ul {
+        margin: 0; }
+        .main article ul li {
+          font-size: 1.2em;
+          border-bottom: 1px solid #A0E3F2;
+          cursor: pointer;
+          padding: 10px 0;
+          list-style-type: none; }
+          .main article ul li:last-child {
+            border: 0; } }
 @media only screen and (min-width: 1140px) {
   /* ===============
       Maximal Width
      =============== */
   .wrapper {
-    width: 1026px;
+    width: 1100px;
     /* 1140px - 10% for margins */
     margin: 0 auto; } }
 /* ==========================================================================
    Helper classes
    ========================================================================== */
+.strike {
+  text-decoration: line-through; }
+
 .ir {
   background-color: transparent;
   border: 0;

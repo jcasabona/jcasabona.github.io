@@ -104,8 +104,7 @@ body {
 }
 
 .wrapper {
-    width: 95%;
-    margin: 0 5%;
+    margin: 0 2%;
 }
 
 /* ===================
@@ -143,6 +142,15 @@ body {
 
 .main-container {
 	background: $color-white;
+
+    header{
+        text-align: center;
+
+        h3{
+            margin: 0;
+            padding: 30px 0 10px;
+        }
+    }
 }
 
 /* ==============
@@ -284,20 +292,33 @@ nav a {
     WIDE: Main
    ============ */
 
-    .main article {
-        display: inline-block;
-        margin: 10px 1%;
-        vertical-align: top;
-        width: 47%;
+    .main {
+        display: flex;
 
-       ul{
-            margin: 0;
+        article {
+            border: 1px solid $color-href-alt;
+            margin: 0 5px;
+            padding: 10px 1%;
+            width: 47%;
 
-             li {
-                font-size: 1.2em;
-                border-bottom: 1px solid $color-accent;
-                padding: 10px 0;
-                list-style-type: none;
+            h3 {
+                text-align: center;
+            }
+
+           ul{
+                margin: 0;
+
+                 li {
+                    font-size: 1.2em;
+                    border-bottom: 1px solid $color-href-alt;
+                    cursor: pointer;
+                    padding: 10px 0;
+                    list-style-type: none;
+
+                    &:last-child {
+                        border: 0;
+                    }
+                }
             }
         }
     }
@@ -310,7 +331,7 @@ nav a {
    =============== */
 
     .wrapper {
-        width: 1026px; /* 1140px - 10% for margins */
+        width: 1100px; /* 1140px - 10% for margins */
         margin: 0 auto;
     }
 }
@@ -318,6 +339,10 @@ nav a {
 /* ==========================================================================
    Helper classes
    ========================================================================== */
+
+.strike {
+    text-decoration: line-through;
+}
 
 .ir {
     background-color: transparent;
