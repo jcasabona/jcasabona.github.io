@@ -10,7 +10,7 @@
 @import "partials/print";
 
 $font-body: 'Shadows Into Light Two', Helvetica, Helvetica Neue, Arial, cursive;
-$font-heading: 'Mountains of Christmas', cursive, Georgia;
+$font-heading: 'Shadows Into Light Two', Helvetica, Helvetica Neue, Arial, cursive;
 
 $color-bg: #880000;
 $color-accent: lighten($color-bg, 10%);
@@ -75,6 +75,7 @@ fieldset {
 
 h1,h2,h3,h4,h5,h6{
 	font-family: $font-heading;
+  font-weight: bold;
 }
 
 ul {
