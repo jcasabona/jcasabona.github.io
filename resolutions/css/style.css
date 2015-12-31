@@ -597,4 +597,8 @@ nav a {
 .clearfix {
   *zoom: 1; }
 
+.year-2016 .main-content {
+  background: #FFFFFF;
+  max-width: 800px; }
+
 /*# sourceMappingURL=style.css.map */
