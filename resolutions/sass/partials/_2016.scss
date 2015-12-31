@@ -22,6 +22,14 @@
         margin: 20px;
         width: auto;
 
+        h3 {
+          text-align: left;
+        }
+
+        ul {
+          margin-bottom: 50px;
+        }
+
         li {
           &:before {
             background: $color-bg;
@@ -30,6 +38,16 @@
             width: 30px;
           }
         }
+      }
+    }
+
+    .footer-container {
+      padding: 25px;
+      text-align: center;
+
+      p {
+        margin-bottom: 0;
+        padding-bottom: 0;
       }
     }
   }

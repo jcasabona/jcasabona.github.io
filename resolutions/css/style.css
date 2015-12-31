@@ -343,7 +343,7 @@ fieldset {
   padding: 0; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Droid Serif", Garamond, Georgia; }
+  font-family: "Droid Sans", Helvetica, Helvetica Neue, Arial, cursive; }
 
 ul {
   margin-left: 40px; }
@@ -362,7 +362,7 @@ textarea {
    ========================================================================== */
 body {
   background: #3D4038;
-  font: 18px/28px "Droid Sans", Helvetica, Helvetica Neue, Arial, cursive;
+  font: 18px/28px "Droid Serif", Garamond, Georgia;
   height: 100%; }
 
 .wrapper {
@@ -372,11 +372,11 @@ body {
     ALL: Orange Theme
    =================== */
 .header-container {
-  border-bottom: 20px solid #F2D377; }
+  border-bottom: 20px solid #EF8200; }
 
 .footer-container,
 .main aside {
-  border-top: 20px solid #F2D377; }
+  border-top: 20px solid #EF8200; }
 
 .header-container,
 .footer-container,
@@ -432,7 +432,7 @@ nav a {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
-  background: #F2D377; }
+  background: #EF8200; }
   nav a:link, nav a:visited {
     color: #3D4038; }
   nav a:focus, nav a:hover {
@@ -613,11 +613,21 @@ nav a {
       border: 0;
       margin: 20px;
       width: auto; }
+      .year-2016 .content .main article h3 {
+        text-align: left; }
+      .year-2016 .content .main article ul {
+        margin-bottom: 50px; }
       .year-2016 .content .main article li:before {
         background: #3D4038;
         height: 30px;
         margin-right: 15px;
         width: 30px; }
+    .year-2016 .content .footer-container {
+      padding: 25px;
+      text-align: center; }
+      .year-2016 .content .footer-container p {
+        margin-bottom: 0;
+        padding-bottom: 0; }
   .year-2016 .title {
     float: none;
     text-align: center; }
