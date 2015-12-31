@@ -597,8 +597,36 @@ nav a {
 .clearfix {
   *zoom: 1; }
 
-.year-2016 .main-content {
-  background: #FFFFFF;
-  max-width: 800px; }
+.year-2016 {
+  background: #d6d8d2; }
+  .year-2016 .content {
+    background: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    margin: 0 auto;
+    max-width: 800px; }
+    .year-2016 .content .wrapper {
+      width: auto; }
+    .year-2016 .content .header-container {
+      -webkit-box-shadow: none;
+      box-shadow: none; }
+    .year-2016 .content .main article {
+      border: 0;
+      margin: 20px;
+      width: auto; }
+      .year-2016 .content .main article li:before {
+        background: #3D4038;
+        height: 30px;
+        margin-right: 15px;
+        width: 30px; }
+  .year-2016 .title {
+    float: none;
+    text-align: center; }
+
+[class^="icon-"], [class*=" icon-"] {
+  height: 28px;
+  width: 28px;
+  display: inline-block;
+  fill: #3D4038;
+  vertical-align: bottom; }
 
 /*# sourceMappingURL=style.css.map */
