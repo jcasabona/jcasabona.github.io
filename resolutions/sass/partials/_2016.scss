@@ -27,10 +27,11 @@
         }
 
         ul {
-          margin-bottom: 50px;
+          margin: 0 0 50px;
         }
 
         li {
+          list-style-type: none;
           &:before {
             background: $color-bg;
             height: 30px;

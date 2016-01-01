@@ -616,12 +616,14 @@ nav a {
       .year-2016 .content .main article h3 {
         text-align: left; }
       .year-2016 .content .main article ul {
-        margin-bottom: 50px; }
-      .year-2016 .content .main article li:before {
-        background: #3D4038;
-        height: 30px;
-        margin-right: 15px;
-        width: 30px; }
+        margin: 0 0 50px; }
+      .year-2016 .content .main article li {
+        list-style-type: none; }
+        .year-2016 .content .main article li:before {
+          background: #3D4038;
+          height: 30px;
+          margin-right: 15px;
+          width: 30px; }
     .year-2016 .content .footer-container {
       padding: 25px;
       text-align: center; }
