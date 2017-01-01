@@ -1,4 +1,5 @@
-.year-2016 {
+.year-2016,
+.year-2017 {
   background: lighten( $color-bg, 60% );
 
   .content {
@@ -39,6 +40,19 @@
             width: 30px;
           }
         }
+
+				&.archive {
+					li {
+						border: 0;
+						display: inline-block;
+						text-align: center;
+						a {
+							font-size: 2.8rem;
+							margin: 15px;
+							text-align: center;
+						}
+					}
+				}
       }
     }
 

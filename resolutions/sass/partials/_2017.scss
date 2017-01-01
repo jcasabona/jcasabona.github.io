@@ -1,0 +1,63 @@
+
+$color-2017-accent: #10607E;
+$color-2017-alt: #C97112;
+$color-2017-tertiary: #C99412;
+$color-2017-bold: #333333;
+
+.year-2017 {
+	background: $color-2017-bold;
+
+	.header-container {
+	    border-top: 20px solid $color-2017-accent;
+			border-bottom: 0;
+	}
+
+	.content {
+		border: 0;
+
+		a {
+			@include href-colors($color-2017-alt, lighten($color-2017-alt, 10%));
+		}
+
+		& nav {
+				 a {
+						 @include href-colors($color-2017-alt, lighten($color-2017-alt, 10%));
+				 }
+		}
+
+		ul li {
+			border-bottom: 1px $color-2017-bold solid;
+
+			&.strike {
+				color: $color-2017-tertiary;
+			}
+		}
+	}
+
+	.footer-container,
+	.main aside {
+	    border-bottom: 20px solid $color-2017-accent;
+			border-top: 0;
+	}
+
+	.header-container,
+	.footer-container,
+	.main aside {
+		background: $color-white;
+		color: $color-2017-bold;
+
+		.title {
+			color: $color-2017-bold;
+		}
+
+	    a {
+	    	@include href-colors($color-2017-alt, lighten($color-2017-alt, 10%));
+	    }
+
+	    & nav {
+	         a {
+	             @include href-colors($color-2017-alt, lighten($color-2017-alt, 10%));
+	         }
+	    }
+	}
+}
