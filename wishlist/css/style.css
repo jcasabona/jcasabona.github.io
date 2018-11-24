@@ -33,7 +33,7 @@ section a:active {
     color: #008800;
 }
 
-section.amazon a.button {
+.amazon a.button {
     background: #FCBB04;
     display: block;
     color: #000000;
