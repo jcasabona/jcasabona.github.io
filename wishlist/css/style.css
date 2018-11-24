@@ -1,6 +1,7 @@
 body {
     background: #880000;
     color: #FFFFFF;
+    font-family: "Black Han Sans", sans-serif;
 }
 
 
@@ -11,6 +12,7 @@ body {
 
 h1 {
     border-bottom: 2px double #FFFFFF;
+    border-style: double;
     text-align: center; 
 }
 
@@ -30,3 +32,15 @@ section a:hover,
 section a:active {
     color: #008800;
 }
+
+section.amazon a.button {
+    background: #FCBB04;
+    display: block;
+    color: #000000;
+    text-align: center;
+    max-width: 400px;
+    font-size: 1.65rem;
+    font-weight: bold;
+    border-radius: 10px;
+}
+    
