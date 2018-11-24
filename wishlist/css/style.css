@@ -2,18 +2,20 @@ body {
     background: #880000;
     color: #FFFFFF;
     font-family: "Black Han Sans", sans-serif;
+    font-size: 62.5%;
 }
 
 
 .container {
     max-width: 800px;
     margin: 0 auto;
+    font-size: 1.25rem;
 }
 
 h1 {
     border-bottom: 2px double #FFFFFF;
-    border-style: double;
     text-align: center; 
+    font-size: 3rem;
 }
 
 section {
@@ -42,5 +44,7 @@ section a:active {
     font-size: 1.65rem;
     font-weight: bold;
     border-radius: 10px;
+    margin: 0 aut0;
+    padding: 10px;
 }
     
