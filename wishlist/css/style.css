@@ -35,6 +35,14 @@ section a:active {
     color: #008800;
 }
 
+section ul {
+    list-style-type: none;
+}
+
+section ul li {
+    margin: 5px 0;
+}
+
 .amazon a.button {
     background: #FCBB04;
     display: block;
