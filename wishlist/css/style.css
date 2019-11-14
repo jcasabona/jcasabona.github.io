@@ -1,19 +1,19 @@
 body {
-    background: #880000;
-    color: #FFFFFF;
-    font-family: "Black Han Sans", sans-serif;
+    background: #CFCFCF;
+    color: #333333;
+    font-family: 'Source Serif Pro', serif;
     font-size: 62.5%;
 }
 
 
 .container {
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto;
     font-size: 1.25rem;
 }
 
 h1 {
-    border-bottom: 2px double #FFFFFF;
+    border-bottom: 2px double #333333;
     text-align: center; 
     font-size: 3rem;
 }
@@ -28,11 +28,12 @@ section {
 section a:link,
 section a:visited {
     color: #880000;
+    font-weight: bold;
 }
 
 section a:hover,
 section a:active {
-    color: #008800;
+    color: #330000;
 }
 
 section ul {
