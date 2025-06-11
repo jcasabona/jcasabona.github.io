@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Voice Message Upload</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W2kKI3M8zgGHYhfTxP8NE+Zzn+3N28sghghWn4KzJ0mAL1DyYx1V3FMohtscv9POzhxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,6 +22,9 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     #recordBtn {
       background-color: #28a745;
@@ -67,23 +70,23 @@
       <input type="email" name="email" id="email" />
     </div>
 
-    <button type="button" id="recordBtn"><i class="fa-solid fa-microphone"></i> Start</button>
-    <button type="button" id="stopBtn" class="hidden"><i class="fa-solid fa-stop"></i> Stop</button>
+    <button type="button" id="recordBtn"><i class="fas fa-microphone"></i> Start</button>
+    <button type="button" id="stopBtn" class="hidden"><i class="fas fa-stop"></i> Stop</button>
     <div id="recordingIndicator" class="hidden">● Recording...</div>
 
     <div id="waveform"></div>
 
     <audio id="audioPlayback" controls class="hidden"></audio>
-    <button type="submit" id="submitBtn" class="hidden"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+    <button type="submit" id="submitBtn" class="hidden"><i class="fas fa-paper-plane"></i> Submit</button>
   </form>
 
-  <script src="https://unpkg.com/wavesurfer.js"></script>
   <script>
     let mediaRecorder;
     let audioChunks = [];
     let stream;
-    let liveStream;
-    let microphone;
+    let analyser;
+    let animationId;
+    let audioContext;
 
     const recordBtn = document.getElementById("recordBtn");
     const stopBtn = document.getElementById("stopBtn");
@@ -93,57 +96,103 @@
     const anonymousCheckbox = document.getElementById("anonymousCheckbox");
     const userDetails = document.getElementById("userDetails");
     const recordingIndicator = document.getElementById("recordingIndicator");
+    const waveformContainer = document.getElementById("waveform");
 
-    const wavesurfer = WaveSurfer.create({
-      container: '#waveform',
-      waveColor: '#ccc',
-      progressColor: '#007bff',
-      height: 100,
-    });
+    const canvas = document.createElement("canvas");
+    canvas.width = waveformContainer.clientWidth;
+    canvas.height = waveformContainer.clientHeight;
+    waveformContainer.appendChild(canvas);
+    const canvasCtx = canvas.getContext("2d");
 
     anonymousCheckbox.addEventListener("change", () => {
       userDetails.style.display = anonymousCheckbox.checked ? "none" : "block";
     });
 
-    recordBtn.onclick = async () => {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
+    function drawWaveform() {
+      if (!analyser) return;
 
-      wavesurfer.empty();
-      if (microphone) microphone.destroy();
-      microphone = wavesurfer.microphone = Object.create(WaveSurfer.Microphone);
-      microphone.init({ wavesurfer: wavesurfer }).start();
+      const bufferLength = analyser.fftSize;
+      const dataArray = new Uint8Array(bufferLength);
 
-      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunks, { type: 'audio/webm' });
-        const url = URL.createObjectURL(blob);
-        audioPlayback.src = url;
-        audioPlayback.classList.remove('hidden');
-        submitBtn.classList.remove('hidden');
-        recordBtn.classList.remove('hidden');
-        stopBtn.classList.add('hidden');
-        recordingIndicator.classList.add('hidden');
+      analyser.getByteTimeDomainData(dataArray);
 
-        if (microphone) microphone.stop();
-        wavesurfer.load(url);
-      };
+      canvasCtx.fillStyle = "#f1f1f1";
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-      mediaRecorder.start();
-      recordBtn.classList.add('hidden');
-      stopBtn.classList.remove('hidden');
-      recordingIndicator.classList.remove('hidden');
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = "#007bff";
+      canvasCtx.beginPath();
 
-      setTimeout(() => {
-        if (mediaRecorder.state === 'recording') {
-          mediaRecorder.stop();
+      const sliceWidth = canvas.width * 1.0 / bufferLength;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * canvas.height / 2;
+
+        if (i === 0) {
+          canvasCtx.moveTo(x, y);
+        } else {
+          canvasCtx.lineTo(x, y);
         }
-      }, 5 * 60 * 1000);
+
+        x += sliceWidth;
+      }
+
+      canvasCtx.lineTo(canvas.width, canvas.height / 2);
+      canvasCtx.stroke();
+
+      animationId = requestAnimationFrame(drawWaveform);
+    }
+
+    recordBtn.onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        source.connect(analyser);
+
+        drawWaveform();
+
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          const url = URL.createObjectURL(blob);
+          audioPlayback.src = url;
+          audioPlayback.classList.remove('hidden');
+          submitBtn.classList.remove('hidden');
+          recordBtn.classList.remove('hidden');
+          stopBtn.classList.add('hidden');
+          recordingIndicator.classList.add('hidden');
+
+          cancelAnimationFrame(animationId);
+          canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+          audioContext.close();
+        };
+
+        mediaRecorder.start();
+        recordBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+        recordingIndicator.classList.remove('hidden');
+
+        setTimeout(() => {
+          if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+          }
+        }, 5 * 60 * 1000);
+      } catch (err) {
+        alert("Microphone access is required to record audio.");
+        console.error(err);
+      }
     };
 
     stopBtn.onclick = () => {
-      if (mediaRecorder.state === 'recording') {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
       }
     };
@@ -170,12 +219,11 @@
         voiceForm.reset();
         audioPlayback.classList.add('hidden');
         submitBtn.classList.add('hidden');
-        wavesurfer.empty();
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
       } else {
         alert("Failed to submit voice message.");
       }
     };
   </script>
-  <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.microphone.min.js"></script>
 </body>
 </html>
