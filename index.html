@@ -56,6 +56,11 @@
       color: red;
       margin-top: 5px;
     }
+    #durationCounter {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -76,7 +81,7 @@
 
     <button type="button" id="recordBtn"><i class="fas fa-microphone"></i> Start</button>
     <button type="button" id="stopBtn" class="hidden"><i class="fas fa-stop"></i> Stop</button>
-    <div id="recordingIndicator" class="hidden">● Recording...</div>
+    <div id="recordingIndicator" class="hidden">● Recording... <span id="durationCounter">0s</span></div>
 
     <div id="waveform"></div>
 
@@ -92,6 +97,8 @@
     let analyser;
     let animationId;
     let audioContext;
+    let recordingStartTime;
+    let durationInterval;
 
     const recordBtn = document.getElementById("recordBtn");
     const stopBtn = document.getElementById("stopBtn");
@@ -102,6 +109,7 @@
     const anonymousCheckbox = document.getElementById("anonymousCheckbox");
     const userDetails = document.getElementById("userDetails");
     const recordingIndicator = document.getElementById("recordingIndicator");
+    const durationCounter = document.getElementById("durationCounter");
     const waveformContainer = document.getElementById("waveform");
 
     const canvas = document.createElement("canvas");
@@ -141,6 +149,19 @@
       animationId = requestAnimationFrame(drawWaveform);
     }
 
+    function startDurationCounter() {
+      recordingStartTime = Date.now();
+      durationCounter.textContent = '0s';
+      durationInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+        durationCounter.textContent = `${elapsed}s`;
+      }, 1000);
+    }
+
+    function stopDurationCounter() {
+      clearInterval(durationInterval);
+    }
+
     recordBtn.onclick = async () => {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -155,6 +176,7 @@
 
         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
         mediaRecorder.onstop = () => {
+          stopDurationCounter();
           const blob = new Blob(audioChunks, { type: 'audio/webm' });
           const url = URL.createObjectURL(blob);
           audioPlayback.src = url;
@@ -176,6 +198,7 @@
         recordBtn.classList.add('hidden');
         stopBtn.classList.remove('hidden');
         recordingIndicator.classList.remove('hidden');
+        startDurationCounter();
 
         setTimeout(() => {
           if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -201,6 +224,7 @@
       resetBtn.classList.add('hidden');
       waveformContainer.classList.remove('hidden');
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+      durationCounter.textContent = '0s';
     };
 
     voiceForm.onsubmit = async e => {
@@ -224,6 +248,7 @@
         resetBtn.classList.add('hidden');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         waveformContainer.classList.remove('hidden');
+        durationCounter.textContent = '0s';
       } else {
         alert("Failed to submit voice message.");
       }
