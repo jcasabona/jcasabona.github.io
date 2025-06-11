@@ -38,6 +38,10 @@
       background-color: #007bff;
       color: white;
     }
+    #resetBtn {
+      background-color: #6c757d;
+      color: white;
+    }
     .hidden {
       display: none;
     }
@@ -77,6 +81,7 @@
     <div id="waveform"></div>
 
     <audio id="audioPlayback" controls class="hidden"></audio>
+    <button type="button" id="resetBtn" class="hidden"><i class="fas fa-redo"></i> Re-record</button>
     <button type="submit" id="submitBtn" class="hidden"><i class="fas fa-paper-plane"></i> Submit</button>
   </form>
 
@@ -90,6 +95,7 @@
 
     const recordBtn = document.getElementById("recordBtn");
     const stopBtn = document.getElementById("stopBtn");
+    const resetBtn = document.getElementById("resetBtn");
     const submitBtn = document.getElementById("submitBtn");
     const audioPlayback = document.getElementById("audioPlayback");
     const voiceForm = document.getElementById("voiceForm");
@@ -110,38 +116,28 @@
 
     function drawWaveform() {
       if (!analyser) return;
-
       const bufferLength = analyser.fftSize;
       const dataArray = new Uint8Array(bufferLength);
-
       analyser.getByteTimeDomainData(dataArray);
-
       canvasCtx.fillStyle = "#f1f1f1";
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
       canvasCtx.lineWidth = 2;
       canvasCtx.strokeStyle = "#007bff";
       canvasCtx.beginPath();
-
-      const sliceWidth = canvas.width * 1.0 / bufferLength;
+      const sliceWidth = canvas.width / bufferLength;
       let x = 0;
-
       for (let i = 0; i < bufferLength; i++) {
         const v = dataArray[i] / 128.0;
         const y = v * canvas.height / 2;
-
         if (i === 0) {
           canvasCtx.moveTo(x, y);
         } else {
           canvasCtx.lineTo(x, y);
         }
-
         x += sliceWidth;
       }
-
       canvasCtx.lineTo(canvas.width, canvas.height / 2);
       canvasCtx.stroke();
-
       animationId = requestAnimationFrame(drawWaveform);
     }
 
@@ -150,13 +146,11 @@
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
-
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const source = audioContext.createMediaStreamSource(stream);
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 2048;
         source.connect(analyser);
-
         drawWaveform();
 
         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
@@ -165,7 +159,10 @@
           const url = URL.createObjectURL(blob);
           audioPlayback.src = url;
           audioPlayback.classList.remove('hidden');
+          resetBtn.classList.remove('hidden');
           submitBtn.classList.remove('hidden');
+          waveformContainer.classList.add('hidden');
+
           recordBtn.classList.remove('hidden');
           stopBtn.classList.add('hidden');
           recordingIndicator.classList.add('hidden');
@@ -197,29 +194,36 @@
       }
     };
 
+    resetBtn.onclick = () => {
+      audioChunks = [];
+      audioPlayback.classList.add('hidden');
+      submitBtn.classList.add('hidden');
+      resetBtn.classList.add('hidden');
+      waveformContainer.classList.remove('hidden');
+      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
     voiceForm.onsubmit = async e => {
       e.preventDefault();
-
       const blob = new Blob(audioChunks, { type: 'audio/webm' });
       const formData = new FormData();
       formData.append("audio", blob, `voice-${Date.now()}.webm`);
-
       if (!anonymousCheckbox.checked) {
         formData.append("name", document.getElementById("name").value);
         formData.append("email", document.getElementById("email").value);
       }
-
       const response = await fetch("/upload.php", {
         method: "POST",
         body: formData
       });
-
       if (response.ok) {
         alert("Voice message submitted successfully.");
         voiceForm.reset();
         audioPlayback.classList.add('hidden');
         submitBtn.classList.add('hidden');
+        resetBtn.classList.add('hidden');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        waveformContainer.classList.remove('hidden');
       } else {
         alert("Failed to submit voice message.");
       }
