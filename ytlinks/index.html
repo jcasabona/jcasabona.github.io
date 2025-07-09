@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Description Link Converter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    #input {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      min-height: 150px;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 200px;
+    }
+    button {
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>YouTube Link Converter</h1>
+
+  <p>Paste your text from Notion or Google Docs below:</p>
+  <div id="input" contenteditable="true"></div>
+
+  <button onclick="convertText()">Convert</button>
+
+  <h2>Converted Output</h2>
+  <textarea id="output" readonly></textarea>
+
+  <script>
+    function convertText() {
+      const inputEl = document.getElementById('input');
+      const outputEl = document.getElementById('output');
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = inputEl.innerHTML;
+
+      // Convert all <a> tags to "Link Text – URL"
+      const links = tempDiv.querySelectorAll('a');
+      links.forEach(link => {
+        const text = link.textContent.trim();
+        const href = link.getAttribute('href');
+        const replacement = `${text} – ${href}`;
+        const textNode = document.createTextNode(replacement);
+        link.replaceWith(textNode);
+      });
+
+      // Get plain text version (strips all formatting)
+      let plainText = tempDiv.textContent;
+
+      // Also convert markdown-style links: [Text](https://example.com)
+      const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
+      plainText = plainText.replace(mdLinkRegex, (match, text, url) => `${text} – ${url}`);
+
+      outputEl.value = plainText.trim();
+    }
+  </script>
+
+</body>
+</html>
