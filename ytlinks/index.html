@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>YouTube Link Converter</title>
+  <title>YouTube Link Converter v1.3</title>
   <style>
     body {
       font-family: sans-serif;
@@ -57,7 +57,16 @@
         link.replaceWith(document.createTextNode(replacement));
       });
 
-      // Convert <li> to "* item"
+      // Add line breaks before and after lists
+      const lists = tempDiv.querySelectorAll('ul, ol');
+      lists.forEach(list => {
+        const before = document.createTextNode('\n\n');
+        const after = document.createTextNode('\n\n');
+        list.parentNode.insertBefore(before, list);
+        list.parentNode.insertBefore(after, list.nextSibling);
+      });
+
+      // Convert <li> to "* item\n"
       const listItems = tempDiv.querySelectorAll('li');
       listItems.forEach(li => {
         const text = li.textContent.trim();
@@ -77,12 +86,14 @@
       // Get plain text version
       let plainText = tempDiv.textContent;
 
-      // Convert markdown-style links to "Text – URL"
+      // Convert markdown-style links
       const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
       plainText = plainText.replace(mdLinkRegex, (match, text, url) => `${text} – ${url}`);
 
-      // Trim and normalize spacing
-      outputEl.value = plainText.trim().replace(/\n{3,}/g, '\n\n');
+      // Normalize spacing
+      plainText = plainText.trim().replace(/\n{3,}/g, '\n\n');
+
+      outputEl.value = plainText;
     }
   </script>
 
