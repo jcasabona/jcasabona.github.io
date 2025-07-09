@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>YouTube Description Link Converter</title>
+  <title>YouTube Link Converter</title>
   <style>
     body {
       font-family: sans-serif;
@@ -16,6 +16,7 @@
       padding: 1rem;
       min-height: 150px;
       margin-bottom: 1rem;
+      white-space: pre-wrap;
     }
     textarea {
       width: 100%;
@@ -47,24 +48,41 @@
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = inputEl.innerHTML;
 
-      // Convert all <a> tags to "Link Text – URL"
+      // Convert <a> tags to "Text – URL"
       const links = tempDiv.querySelectorAll('a');
       links.forEach(link => {
         const text = link.textContent.trim();
         const href = link.getAttribute('href');
         const replacement = `${text} – ${href}`;
-        const textNode = document.createTextNode(replacement);
-        link.replaceWith(textNode);
+        link.replaceWith(document.createTextNode(replacement));
       });
 
-      // Get plain text version (strips all formatting)
+      // Convert <li> to "* item"
+      const listItems = tempDiv.querySelectorAll('li');
+      listItems.forEach(li => {
+        const text = li.textContent.trim();
+        li.replaceWith(document.createTextNode(`* ${text}\n`));
+      });
+
+      // Preserve paragraph spacing by adding extra line breaks
+      const blockElements = tempDiv.querySelectorAll('p, div, br');
+      blockElements.forEach(el => {
+        if (el.tagName === 'BR') {
+          el.replaceWith(document.createTextNode('\n'));
+        } else {
+          el.appendChild(document.createTextNode('\n\n'));
+        }
+      });
+
+      // Get plain text version
       let plainText = tempDiv.textContent;
 
-      // Also convert markdown-style links: [Text](https://example.com)
+      // Convert markdown-style links to "Text – URL"
       const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
       plainText = plainText.replace(mdLinkRegex, (match, text, url) => `${text} – ${url}`);
 
-      outputEl.value = plainText.trim();
+      // Trim and normalize spacing
+      outputEl.value = plainText.trim().replace(/\n{3,}/g, '\n\n');
     }
   </script>
 
