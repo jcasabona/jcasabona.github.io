@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Delivery Tracker</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,34 +147,30 @@ h1 { font-size: clamp(24px, 4.4vw, 44px); font-weight: 400; margin: 6px 0 0; tex
     fs.appendChild(lab);
   }
 
-  // Sync: shared db doc (works across devices) + BroadcastChannel (instant in the same browser)
-  let bc = null; try { bc = new BroadcastChannel('delivery-tracker'); } catch (e) {}
-  if (bc) bc.onmessage = e => show(clamp(e.data && e.data.step));
-  let ref = null, writing = Promise.resolve();
+  // Sync across browsers/devices via ntfy.sh (public relay; change TOPIC to something only you know)
+  const TOPIC = 'jc-delivery-tracker-7f3k9q';
+  const BASE = 'https://ntfy.sh/' + TOPIC;
   const note = document.getElementById('ctlNote');
 
   fs.addEventListener('change', e => {
     const step = clamp(e.target.value);
     show(step);
-    if (bc) bc.postMessage({ step });
-    if (ref) writing = writing.then(() => ref.set({ step })).then(
-      () => { note.textContent = 'Live. Changes appear on the main view.'; },
-      () => { note.textContent = 'Could not save. Only this browser is updating.'; });
+    fetch(BASE, { method: 'POST', body: String(step) }).then(
+      r => { note.textContent = r.ok ? 'Sent.' : 'Send failed (' + r.status + ').'; },
+      () => { note.textContent = 'Send failed. Check your connection.'; });
   });
 
   show(0);
-  if (window.claude && window.claude.use) {
-    window.claude.use('db').then(db => {
-      if (!db) { note.textContent = 'Shared sync unavailable. Open both views in the same browser.'; return; }
-      ref = db.doc('tracker/state');
-      note.textContent = 'Live. Changes appear on the main view.';
-      ref.onSnapshot(snap => { if (snap.exists) show(clamp(snap.data().step)); },
-        () => { note.textContent = 'Shared sync stopped. Reload this page.'; });
-    });
-  } else {
-    note.textContent = 'Shared sync unavailable. Open both views in the same browser.';
-  }
+  // Load the most recent value, then listen live
+  fetch(BASE + '/json?poll=1&since=latest').then(r => r.text()).then(t => {
+    const last = t.trim().split('\n').filter(Boolean).pop();
+    if (last) { const m = JSON.parse(last); if (m.message != null) show(clamp(m.message)); }
+  }).catch(() => {});
+  const es = new EventSource(BASE + '/sse');
+  es.onopen = () => { note.textContent = 'Connected.'; };
+  es.onmessage = e => {
+    try { const m = JSON.parse(e.data); if (m.event === 'message') show(clamp(m.message)); } catch (err) {}
+  };
+  es.onerror = () => { note.textContent = 'Reconnecting…'; };
 })();
 </script>
-
-</body></html>
