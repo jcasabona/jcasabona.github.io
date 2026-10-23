@@ -1,0 +1,181 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Delivery Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+<style>
+/* Layout: main view = ETA header + simulated map; #controller view = radio list that drives the main view */
+:root {
+  --bg: #ffffff; --fg: #1f1f1f; --muted: #5f6368; --line: #dadce0;
+  --land: #f1f3f4; --park: #cdeedd; --water: #a8d8f0; --street: #ffffff; --street-edge: #dfe3e6;
+  --road: #8fa4c0; --route: #4285f4; --traveled: #b7c3d3;
+  --pin: #ffffff; --pin-edge: #c5221f; --pin-icon: #b0502a; --home: #b0502a; --sel: #e8f0fe;
+  --font: "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1b1d20; --fg: #e8eaed; --muted: #9aa0a6; --line: #3c4043;
+  --land: #2a2d31; --park: #24432f; --water: #2b4a63; --street: #3a3e44; --street-edge: #33373c;
+  --road: #6d7f99; --route: #7baaf7; --traveled: #4d5868;
+  --pin: #f1f3f4; --pin-edge: #f28b82; --pin-icon: #b0502a; --home: #b0502a; --sel: #26334a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1b1d20; --fg: #e8eaed; --muted: #9aa0a6; --line: #3c4043;
+  --land: #2a2d31; --park: #24432f; --water: #2b4a63; --street: #3a3e44; --street-edge: #33373c;
+  --road: #6d7f99; --route: #7baaf7; --traveled: #4d5868;
+  --pin: #f1f3f4; --pin-edge: #f28b82; --pin-icon: #b0502a; --home: #b0502a; --sel: #26334a; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px; }
+.wrap { max-width: 1000px; margin: 0 auto; display: grid; gap: 20px; }
+.eyebrow { font-size: 15px; color: var(--muted); font-weight: 500; }
+h1 { font-size: clamp(24px, 4.4vw, 44px); font-weight: 400; margin: 6px 0 0; text-wrap: balance; }
+.remaining { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.remaining strong { font-size: clamp(18px, 2.6vw, 24px); font-weight: 500; color: var(--route); font-variant-numeric: tabular-nums; }
+.remaining span { color: var(--muted); font-size: 14px; }
+.map { border: 1px solid var(--line); overflow: hidden; }
+.map svg { display: block; width: 100%; height: auto; }
+#driver, #route, #traveled { transition: transform .8s ease, x1 .8s ease, x2 .8s ease; }
+@media (prefers-reduced-motion: reduce) { #driver, #route, #traveled { transition: none; } }
+
+/* controller */
+.ctl { max-width: 420px; margin: 0 auto; display: grid; gap: 16px; }
+.ctl h1 { font-size: 24px; }
+.ctl fieldset { border: 1px solid var(--line); margin: 0; padding: 8px; display: grid; gap: 4px; }
+.ctl legend { font-size: 13px; color: var(--muted); padding: 0 6px; }
+.ctl label { display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer; font-size: 16px; font-variant-numeric: tabular-nums; }
+.ctl label:has(input:checked) { background: var(--sel); }
+.ctl input { width: 20px; height: 20px; accent-color: var(--route); margin: 0; }
+.ctl .note { font-size: 13px; color: var(--muted); }
+</style>
+
+<div class="wrap" id="mainView">
+  <header>
+    <div class="eyebrow">Estimated delivery</div>
+    <h1>Today, October 23, 12:15 P.M. – 2:15 P.M.</h1>
+    <div class="remaining" aria-live="polite">
+      <strong id="remain">2 hr remaining</strong>
+      <span id="status">Driver is at the store</span>
+    </div>
+  </header>
+
+  <div class="map">
+    <svg id="svg" viewBox="0 0 1000 520" role="img" aria-label="Map showing the delivery route">
+      <rect width="1000" height="520" fill="var(--land)"/>
+      <path d="M0 120 C80 90 170 140 200 220 C220 290 150 340 60 330 C20 325 0 300 0 280 Z" fill="var(--park)"/>
+      <path d="M420 60 C520 30 640 70 660 140 C680 200 600 230 520 210 C450 195 400 120 420 60 Z" fill="var(--park)"/>
+      <path d="M700 370 C800 340 930 360 1000 400 L1000 520 L640 520 C620 460 650 390 700 370 Z" fill="var(--park)"/>
+      <path d="M260 390 C330 370 420 400 430 450 C440 500 360 520 300 520 L230 520 C220 470 220 410 260 390 Z" fill="var(--park)"/>
+      <path d="M820 40 C880 20 960 50 1000 70 L1000 170 C940 180 860 150 830 110 C810 80 805 55 820 40 Z" fill="var(--park)"/>
+      <ellipse cx="545" cy="150" rx="28" ry="40" fill="var(--water)"/>
+      <path d="M0 360 C120 350 200 420 330 410 C460 400 520 330 600 340 C700 352 760 300 860 310 C920 316 960 290 1000 285" fill="none" stroke="var(--water)" stroke-width="4"/>
+      <path d="M300 0 C310 80 360 120 340 200 C325 260 380 300 360 360 C345 420 380 470 370 520" fill="none" stroke="var(--water)" stroke-width="3"/>
+      <path d="M690 0 C700 60 740 100 720 170 C705 220 760 250 760 310" fill="none" stroke="var(--water)" stroke-width="3"/>
+      <path d="M930 520 C920 450 960 400 950 330 C945 290 975 240 1000 220" fill="none" stroke="var(--water)" stroke-width="5"/>
+      <g fill="none" stroke="var(--street-edge)" stroke-width="9" stroke-linecap="round">
+        <path id="streets" d="M140 280 L140 520 M230 0 L250 280 M480 280 L470 520 M560 280 L600 0 M760 280 L790 520 M860 0 L880 280 M900 280 L900 520 M640 280 L660 520 M380 0 L400 280 M60 280 L40 520 M0 60 L1000 20 M220 440 L520 450 M640 450 L1000 470 M640 200 L880 190 M60 200 L240 190 M820 120 L1000 110"/>
+      </g>
+      <g fill="none" stroke="var(--street)" stroke-width="6" stroke-linecap="round"><use href="#streets"/></g>
+      <g fill="none" stroke="var(--street-edge)" stroke-width="2" stroke-linecap="round" opacity=".9">
+        <path d="M150 300 L230 300 M150 340 L230 340 M150 380 L230 380 M490 320 L560 320 M490 360 L560 360 M800 300 L880 300 M800 340 L880 340 M800 380 L880 380 M590 60 L660 60 M590 100 L660 100 M250 60 L370 60 M250 120 L370 120 M890 200 L1000 200 M900 230 L1000 230"/>
+      </g>
+      <line x1="0" y1="280" x2="1000" y2="280" stroke="var(--road)" stroke-width="14"/>
+      <line id="traveled" x1="120" y1="280" x2="120" y2="280" stroke="var(--traveled)" stroke-width="8" stroke-linecap="round"/>
+      <line id="route" x1="120" y1="280" x2="880" y2="280" stroke="var(--route)" stroke-width="8" stroke-linecap="round"/>
+      <g transform="translate(120 280)" aria-hidden="true">
+        <path d="M0 0 C-6 -14 -24 -26 -24 -44 A24 24 0 1 1 24 -44 C24 -26 6 -14 0 0 Z" fill="var(--pin)" stroke="var(--pin-edge)" stroke-width="2.5"/>
+        <circle cy="-44" r="15" fill="#1a73e8"/>
+        <path d="M-8 -50 L-5 -50 L-2 -40 L7 -40 L9 -48 L-3 -48" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="-1" cy="-36" r="1.8" fill="#fff"/><circle cx="6" cy="-36" r="1.8" fill="#fff"/>
+      </g>
+      <g transform="translate(880 280)" aria-hidden="true">
+        <path d="M0 0 C-6 -14 -24 -26 -24 -44 A24 24 0 1 1 24 -44 C24 -26 6 -14 0 0 Z" fill="var(--pin)" stroke="var(--pin-edge)" stroke-width="2.5"/>
+        <circle cy="-44" r="15" fill="var(--home)"/>
+        <path d="M-8 -43 L0 -51 L8 -43 L8 -36 L-8 -36 Z" fill="#fff"/>
+        <rect x="-2" y="-41" width="4" height="5" fill="var(--home)"/>
+      </g>
+      <g id="driver" style="transform: translate(120px, 280px)" aria-hidden="true">
+        <path d="M0 0 C-6 -14 -24 -26 -24 -44 A24 24 0 1 1 24 -44 C24 -26 6 -14 0 0 Z" fill="var(--pin)" stroke="var(--pin-edge)" stroke-width="2.5"/>
+        <circle cy="-44" r="15" fill="var(--pin-icon)"/>
+        <path d="M-9 -49 L3 -49 L3 -39 L-9 -39 Z M3 -46 L7 -46 L10 -42 L10 -39 L3 -39 Z" fill="#fff"/>
+        <circle cx="-5" cy="-37" r="2.2" fill="#fff"/><circle cx="6" cy="-37" r="2.2" fill="#fff"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<div class="ctl" id="ctlView" hidden>
+  <div>
+    <div class="eyebrow">Controller</div>
+    <h1>Driver progress</h1>
+  </div>
+  <fieldset id="steps"><legend>Time remaining</legend></fieldset>
+  <div class="note" id="ctlNote">Connecting…</div>
+</div>
+
+<script>
+(() => {
+  const START = 120, END = 880, STEPS = 8, TOTAL_MIN = 120;
+  const isCtl = location.hash === '#controller';
+  document.getElementById('mainView').hidden = isCtl;
+  document.getElementById('ctlView').hidden = !isCtl;
+
+  const fmt = min => {
+    if (min <= 0) return 'Delivered';
+    const h = Math.floor(min / 60), m = min % 60;
+    return [h ? `${h} hr` : '', m ? `${m} min` : ''].filter(Boolean).join(' ') + ' remaining';
+  };
+  const clamp = s => Math.max(0, Math.min(STEPS, Math.round(Number(s) || 0)));
+
+  // Main view rendering
+  const driver = document.getElementById('driver');
+  const route = document.getElementById('route');
+  const traveled = document.getElementById('traveled');
+  function show(step) {
+    const x = START + (END - START) * step / STEPS;
+    driver.style.transform = `translate(${x}px, 280px)`;
+    traveled.setAttribute('x2', x);
+    route.setAttribute('x1', x);
+    document.getElementById('remain').textContent = fmt(TOTAL_MIN - step * 15);
+    document.getElementById('status').textContent =
+      step === 0 ? 'Driver is at the store' : step === STEPS ? 'Your order has arrived' : 'Driver is on the way';
+    if (isCtl) { const r = document.getElementById('s' + step); if (r) r.checked = true; }
+  }
+
+  // Controller radios
+  const fs = document.getElementById('steps');
+  for (let s = 0; s <= STEPS; s++) {
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="radio" name="step" id="s${s}" value="${s}"> <span>${fmt(TOTAL_MIN - s * 15)}</span>`;
+    fs.appendChild(lab);
+  }
+
+  // Sync: shared db doc (works across devices) + BroadcastChannel (instant in the same browser)
+  let bc = null; try { bc = new BroadcastChannel('delivery-tracker'); } catch (e) {}
+  if (bc) bc.onmessage = e => show(clamp(e.data && e.data.step));
+  let ref = null, writing = Promise.resolve();
+  const note = document.getElementById('ctlNote');
+
+  fs.addEventListener('change', e => {
+    const step = clamp(e.target.value);
+    show(step);
+    if (bc) bc.postMessage({ step });
+    if (ref) writing = writing.then(() => ref.set({ step })).then(
+      () => { note.textContent = 'Live. Changes appear on the main view.'; },
+      () => { note.textContent = 'Could not save. Only this browser is updating.'; });
+  });
+
+  show(0);
+  if (window.claude && window.claude.use) {
+    window.claude.use('db').then(db => {
+      if (!db) { note.textContent = 'Shared sync unavailable. Open both views in the same browser.'; return; }
+      ref = db.doc('tracker/state');
+      note.textContent = 'Live. Changes appear on the main view.';
+      ref.onSnapshot(snap => { if (snap.exists) show(clamp(snap.data().step)); },
+        () => { note.textContent = 'Shared sync stopped. Reload this page.'; });
+    });
+  } else {
+    note.textContent = 'Shared sync unavailable. Open both views in the same browser.';
+  }
+})();
+</script>
+
+</body></html>
